@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 const userModel = require("../models/user.model");
 const userService = require("../services/user.service");
-
+const blackListTokenModel = require("../models/blackListToken.model");
 module.exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -28,7 +28,7 @@ module.exports.registerUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-o
+
 module.exports.loginUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -44,9 +44,21 @@ module.exports.loginUser = async (req, res) => {
     }
 
     const token = user.generateAuthToken();
-    res.status(200).json({ token, user });
+
+    res.status(200).cookie("token", token).json({ token, user });
   } catch (error) {
     console.error("Login error:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+module.exports.getUserProfile = async (req, res) => {
+  return res.status(200).json(req.user);
+};
+
+module.exports.logoutUser = async (req, res) => {
+  res.clearCookie("token");
+  const token = req.headers?.authorization?.split(" ")[1] || req.cookies.token;
+  await blackListTokenModel.create({ token });
+  return res.status(200).json({ message: "Logged out successfully" });
 };

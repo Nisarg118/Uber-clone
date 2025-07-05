@@ -65,3 +65,37 @@ The request body must be a JSON object with the following structure:
 
 - All fields are required.
 - The response includes a JWT token for authentication.
+
+---
+
+# User Profile Endpoint Documentation
+
+## Endpoint
+
+`GET /users/profile`
+
+## Description
+
+Retrieves the profile information of the currently authenticated user.
+
+## Authentication
+
+Requires a valid JWT token in the Authorization header:
+`Authorization:Bearer <token>`
+
+---
+
+# User Logout Endpoint Documentation
+
+## Endpoint
+
+`GET /users/logout`
+
+## Description
+
+Logout the current user and blacklist the token provided in cookie or headers
+
+## Authentication
+
+Requires a valid JWT token in the Authorization header or cookie:
+`Authorization:Bearer <token>`
