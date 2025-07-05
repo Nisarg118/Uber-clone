@@ -23,26 +23,45 @@ The request body must be a JSON object with the following structure:
 }
 ```
 
-## Example Responses
-
-{
-"token": "<jwt_token>",
-"user": {
-"\_id": "<user_id>",
-"fullname": {
-"firstname": "John",
-"lastname": "Doe"
-},
-"email": "john.doe@example.com"
-// ...other user fields
-}
-}
-
-```
-
 ## Notes
 
 - All fields are required.
 - The password is securely hashed before storage.
 - The response includes a JWT token for authentication.
+
+---
+
+# User Login Endpoint Documentation
+
+## Endpoint
+
+`POST /users/login`
+
+## Description
+
+Authenticates a user with email and password. Returns a JWT token and user data if credentials are valid.
+
+## Request Body
+
+The request body must be a JSON object with the following structure:
+
 ```
+{
+  "email": "string (valid email, required)",
+  "password": "string (min 6 chars, required)"
+}
+```
+
+### Example
+
+```
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123"
+}
+```
+
+## Notes
+
+- All fields are required.
+- The response includes a JWT token for authentication.

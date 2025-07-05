@@ -3,8 +3,6 @@ const userModel = require("../models/user.model");
 const userService = require("../services/user.service");
 
 module.exports.registerUser = async (req, res) => {
-  console.log("Register route hit"); // Add this line
-  console.log("Body:", req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -23,10 +21,32 @@ module.exports.registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = user.generateAuthToken(); // ✅ spelling fix
+    const token = user.generateAuthToken();
     res.status(201).json({ token, user });
   } catch (error) {
     console.error("Registration error:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+o
+module.exports.loginUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email }).select("+password");
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = user.generateAuthToken();
+    res.status(200).json({ token, user });
+  } catch (error) {
+    console.error("Login error:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
