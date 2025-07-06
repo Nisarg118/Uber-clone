@@ -219,3 +219,176 @@ The request body must be a JSON object with the following structure:
 - The password is securely hashed before storage.
 - The response includes a JWT token for authentication.
 - Vehicle type must be
+
+---
+
+# Captain Endpoints Documentation
+
+## Login Captain
+
+### Endpoint
+
+`POST /captains/login`
+
+### Description
+
+Authenticates a captain with email and password. Returns a JWT token and captain data if credentials are valid.
+
+### Request Body
+
+```json
+{
+  "email": "string (valid email, required)",
+  "password": "string (min 6 chars, required)"
+}
+```
+
+#### Example
+
+```json
+{
+  "email": "alice.smith@example.com",
+  "password": "securePassword123"
+}
+```
+
+### Success Response
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "token": "jwt_token_here",
+    "captain": {
+      "_id": "captain_id_here",
+      "fullname": {
+        "firstname": "Alice",
+        "lastname": "Smith"
+      },
+      "email": "alice.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ1234",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+### Error Responses
+
+- **Status:** `400 Bad Request`
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Email must be a valid email address",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+- **Status:** `401 Unauthorized`
+  ```json
+  {
+    "error": "Invalid credentials"
+  }
+  ```
+- **Status:** `500 Internal Server Error`
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
+---
+
+## Captain Profile
+
+### Endpoint
+
+`GET /captains/profile`
+
+### Description
+
+Returns the authenticated captain's profile information. Requires a valid JWT token.
+
+### Success Response
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id_here",
+      "fullname": {
+        "firstname": "Alice",
+        "lastname": "Smith"
+      },
+      "email": "alice.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ1234",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+### Error Responses
+
+- **Status:** `401 Unauthorized`
+  ```json
+  {
+    "error": "Authentication required"
+  }
+  ```
+- **Status:** `404 Not Found`
+  ```json
+  {
+    "error": "Captain not found"
+  }
+  ```
+
+---
+
+## Captain Logout
+
+### Endpoint
+
+`GET /captains/logout`
+
+### Description
+
+Logs out the authenticated captain by invalidating the JWT token and clearing the authentication cookie. Requires a valid JWT token.
+
+### Success Response
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+### Error Responses
+
+- **Status:** `401 Unauthorized`
+  ```json
+  {
+    "error": "Authentication required"
+  }
+  ```
+
+---
+
+**Note:**
+
+- All fields are required for registration.
+- The password is securely hashed before storage.
+- The response includes a JWT token for authentication.
+- Vehicle type must be one of: `car`,
